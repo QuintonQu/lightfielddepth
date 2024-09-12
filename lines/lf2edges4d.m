@@ -34,8 +34,8 @@ function [P, V] = lf2edges4d(EPIuc, EPIvc, param)
   Lv = filterOutliers(Lv, EPIvc, gxEPIv, gyEPIv, param);
 
   % Gradient-based line slope(depth)refinement
-  Lu = refineLineDepth(Lu, gxEPIu, gyEPIu, EPIuc);
-  Lv = refineLineDepth(Lv, gxEPIv, gyEPIv, EPIvc);
+  % Lu = refineLineDepth(Lu, gxEPIu, gyEPIu, EPIuc);
+  % Lv = refineLineDepth(Lv, gxEPIv, gyEPIv, EPIvc);
 
   % Merge lines from vertical and horizontal EPIs
   P = merge(Lu, Lv, param.szLF);

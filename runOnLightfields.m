@@ -4,7 +4,7 @@
 %%
 function runOnLightfields (D)
   addpath('./util', './lines', './depth', './cviewDepthEstim', './cviewDepthEstim/wmf', ...
-	  './angularDiffusion');
+	  './angularDiffusion', 'my_script/');
   if isempty(D{1})
     disp('Error! No input specified. Please see README.md for help.');
     return;
@@ -15,7 +15,7 @@ function runOnLightfields (D)
   tstamp = datestr(datetime, 'dd-mmm-yyyy HHMM');
   tstamp( isspace(tstamp) ) = '_';
   folder = ['./results/' tstamp 'hrs'];
-  mkdir(folder);
+  % mkdir(folder);
 
   % The output file the name is the name of the light field
   fout = {};

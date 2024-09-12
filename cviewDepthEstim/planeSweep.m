@@ -54,7 +54,10 @@ function [P, conf, pUnreliableIdx] = planeSweep(P, O, V, LFg, param)
   conf = cellfun(@(cf, i) mean(cf(i)), num2cell(conf, [1 2]), num2cell(idx, [1 2]) );
   conf = conf(:);
 
+  nanMask = isnan(didx);
+  didx(nanMask) = 1;
   idx = sub2ind( size(doff), [1:npoints]', didx );
+  idx(nanMask) = NaN;
   pUnreliableIdx = isnan(idx); % These NaNs occur for patches where all pixels' confidence is lower than the threshold
 
   P(~pUnreliableIdx, 3) = doff( idx(~pUnreliableIdx) );

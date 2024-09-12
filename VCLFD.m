@@ -102,17 +102,28 @@ function VCLFD (fin, fout, param)
   t = toc;
   disp(['Weighted median filtering completed in ' num2str(t) 's']);
 
+
+  % Display o
+  max_val = max(o(:));
+  min_val = min(o(:));
+
+  figure;
+  imshow((o - min_val) / (max_val - min_val), []);
+  title('Normalized Depth Map');
+  % colormap("jet"); 
+  colorbar; 
+
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % CROSS-HAIR VIEW PROJECTION %
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  v = [1:param.szLF(3) repelem(param.cviewIdx, 1, param.szLF(4))];
+  v = [1:param.szLF(3) repelem(param.cviewIdx, 1, param.szLF(4))]; 
   u = [repelem(param.cviewIdx, 1, param.szLF(3)) 1:param.szLF(4)];
   R = zeros(param.szLF(1), param.szLF(2), length(u));
   M = zeros(param.szLF(1), param.szLF(2), length(u));
 
   tic;
   parfor (i = 1:length(u), 18)
-    [R(:, :, i), M(:, :, i)] = reproj(o,  param.cviewIdx - v(i), param.cviewIdx - u(i));
+    [R(:, :, i), M(:, :, i)] = reproj(o, param.cviewIdx - v(i), param.cviewIdx - u(i));
   end
   t = toc;
   disp(['Crosshair views projection completed in ' num2str(t) 's']);
@@ -134,25 +145,25 @@ function VCLFD (fin, fout, param)
 
   % Diffuse along horizontal EPIs
   U = diffuseAngular(dEPIu, mEPIu, lEPIu, wEPIu, o', EPIuc, param);
-		     
+
   dEPIv = permute(permute(R(:, :, 1:param.szLF(3)), [2 1 3]), [3 2 1]);
   dEPIv(isnan(dEPIv)) = 0;
   mEPIv = permute(permute(M(:, :, 1:param.szLF(3)), [2 1 3]), [3 2 1]);
-  
+
   idx = ~V(:, param.cviewIdx);
   [wEPIv, lEPIv, ~] = splatEPIv(P(idx, :), V(idx, 1:param.szLF(3)), W(idx, :), param.szEPI);
 
   % Diffuse along vertical EPIs
   V = diffuseAngular(dEPIv, mEPIv, lEPIv, wEPIv, o, EPIvc, param);
   V = permute(V, [2 1 3]);
-  
+
   t = toc;
   disp(['EPI propagation completed in ' num2str(t) 's']);
-  
+
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %  Non-Cross Hair View Projection %
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  
+
   tic;
   D = [];
   jv = [1:param.cviewIdx-1 param.cviewIdx + 1:param.szLF(3)];
@@ -178,6 +189,6 @@ function VCLFD (fin, fout, param)
   disp(['All views projection completed in ' num2str(t) 's']);
   disp(['Depth estimation for ' num2str(param.szLF(3) * param.szLF(4)) ' views completed in ' num2str(toc(t0)) 's']);
   disp(['Output saved in ' fout '.mat']);
-  
+
   save([fout '.mat'], 'D');
 end

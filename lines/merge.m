@@ -23,4 +23,17 @@ function [P, puIdx, pvIdx] = merge(Lu, Lv, szLF)
   pvIdx = zeros(size(P, 1), 1, 'logical');
   puIdx([1:size(Lu, 1)]) = 1;
   pvIdx([size(Lu, 1) + 1:size(Lu, 1) + size(Lv, 1)]) = 1;
+
+  % round the x and y coordinates
+  P(:, 1) = round(P(:, 1));
+  P(:, 2) = round(P(:, 2));
+
+  % remove duplicate points, keeping the one with the smallest depth
+  [unique_coords, ~, idx] = unique(P(:, 1:2), 'rows', 'stable');
+  min_depth = accumarray(idx, P(:, 3), [], @min);
+  P = [unique_coords, min_depth];
+
+  % update the indices
+  puIdx = puIdx(idx == idx);
+  pvIdx = pvIdx(idx == idx);
 end

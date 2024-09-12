@@ -54,6 +54,10 @@ function [outputFW, maskFW] = reproj(disparity_ref, delY, delX)
   outputFW = zeros(h,w);
   ImgRefVec = disparity_ref(NonOverlapped);
   outputFW = griddata(curX_forward, curY_forward, ImgRefVec, X, Y, 'linear');
+  % 检查 outputFW 的大小
+  if numel(outputFW) ~= h * w
+    error('The number of elements in outputFW does not match the expected size [h, w].');
+  end
   outputFW = reshape(outputFW,[h,w]);
   maskFW = maskFW & ~isnan(outputFW);
 end

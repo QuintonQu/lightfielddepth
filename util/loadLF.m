@@ -52,15 +52,15 @@ function [LF, dmin, dmax] = loadLF( fin, uCameraMovingRight, vCameraMovingRight,
       for j = 1:u
         filename = fullfile(fin, files((i - 1) * u + j).name);
 
-	if strcmp(cspace, 'lab')
-	  LF(:, :, :, i, j) = rgb2lab(imread(filename));
-	elseif strcmp(cspace, 'ycbcr')
-	  LF(:, :, :, i, j) = rgb2ycbcr(imread(filename));
-        elseif strcmp(cspace, 'gray')
-          LF(:, :, 1, i, j) = rgb2gray(imread(filename));
-	else 
-	  LF(:, :, :, i, j) = (imread(filename));		  
-	end  
+	    if strcmp(cspace, 'lab')
+	      LF(:, :, :, i, j) = rgb2lab(imread(filename));
+	    elseif strcmp(cspace, 'ycbcr')
+	      LF(:, :, :, i, j) = rgb2ycbcr(imread(filename));
+            elseif strcmp(cspace, 'gray')
+              LF(:, :, 1, i, j) = rgb2gray(imread(filename));
+	    else 
+	      LF(:, :, :, i, j) = (imread(filename));		  
+	    end  
       end
     end
   elseif strcmp(ext, '.mat')
